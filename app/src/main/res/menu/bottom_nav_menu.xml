@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Kanban"
+          android:icon="@drawable/baseline_check_box_24"
+          android:id="@+id/kanban" />
+    <item android:title="Calendar"
+          android:icon="@drawable/baseline_calendar_today_24"
+          android:id="@+id/calendar"  />
+    <item android:title="Study Methods"
+          android:icon="@drawable/baseline_tips_and_updates_24"
+          android:id="@+id/study"  />
+    <item android:title="Setting"
+          android:icon="@drawable/baseline_settings_24"
+          android:id="@+id/setting" />
+</menu>
