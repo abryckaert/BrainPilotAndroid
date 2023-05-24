@@ -20,6 +20,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class CalendarFragment extends Fragment {
     CalendarView calendarView;
     FloatingActionButton buttonAddEvent;
+    int year;
+    int month;
+    int dayOfMonth;
 
     public static CalendarFragment newInstance(String param1, String param2) {
         CalendarFragment fragment = new CalendarFragment();
@@ -28,6 +31,7 @@ public class CalendarFragment extends Fragment {
     }
 
     public CalendarFragment() {
+
     }
 
     @Override
@@ -38,12 +42,16 @@ public class CalendarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         initObjects(container, view);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                String date =  year + "/" + month + "/" + dayOfMonth;
+            public void onSelectedDayChange(CalendarView view, int yearSelected, int monthSelected, int dayOfMonthSelected) {
+                year = yearSelected;
+                month = monthSelected;
+                dayOfMonth = dayOfMonthSelected;
+                String date =  yearSelected + "/" + monthSelected + "/" + dayOfMonthSelected;
                 Log.wtf("wtf","onSelectedDayChange" + date);
             }
         });
@@ -65,7 +73,7 @@ public class CalendarFragment extends Fragment {
     private void moveToEventAddPage(){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout2,new EventAddFragment());
+        fragmentTransaction.replace(R.id.frameLayout2,new EventAddFragment(year,month,dayOfMonth));
         fragmentTransaction.commit();
     }
 }

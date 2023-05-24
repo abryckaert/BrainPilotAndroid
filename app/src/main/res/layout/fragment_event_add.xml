@@ -18,7 +18,7 @@
         android:textColor="@color/black"/>
 
     <EditText
-        android:id="@+id/eventNameET"
+        android:id="@+id/eventName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -27,7 +27,7 @@
         android:inputType="text"/>
 
     <TextView
-        android:id="@+id/eventDateTV"
+        android:id="@+id/eventDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -49,6 +49,7 @@
         android:textColor="@color/black"/>
 
     <Button
+        android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -60,7 +61,7 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/addEvent"
+        android:id="@+id/backButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
