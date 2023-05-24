@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 class MyDatabaseHelper extends SQLiteOpenHelper {
@@ -15,13 +17,21 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "brainpilot.db";
     private static final int DATABASE_VERSION = 1;
 
-    private static final String TABLE_NAME = "event";
+    //Event database
+    private static final String TABLE_NAME_EVENT = "event";
     private static final String EVENT_ID = "id";
+    private static final String COLUMN_DAY_EVENT = "day";
+    private static final String COLUMN_MONTH_EVENT = "month";
+    private static final String COLUMN_YEAR_EVENT = "year";
+    private static final String COLUMN_NAME_EVENT = "name";
 
-    private static final String COLUMN_DAY = "day";
-    private static final String COLUMN_MONTH = "month";
-    private static final String COLUMN_YEAR = "year";
-    private static final String COLUMN_NAME = "name";
+    //Kanban database
+    private static final String TABLE_NAME_KANBAN = "kanban";
+    private static final String KANBAN_ID = "id";
+    private static final String COLUMN_KANBAN_NAME = "name";
+    private static final String COLUMN_KANBAN_STATE = "state";
+    private static final String COLUMN_KANBAN_CREATION = "creationDate";
+    private static final String COLUMN_KANBAN_DEADLINE = "deadLine";
 
 
     MyDatabaseHelper(@Nullable Context context) {
@@ -31,17 +41,36 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE " + TABLE_NAME +
-                " (" + EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_DAY + " INTEGER, " +
-                COLUMN_YEAR + " INTEGER," +
-                COLUMN_MONTH + " INTEGER," +
-                COLUMN_NAME + " TEXT);";
-        db.execSQL(query);
+        String queryEvent = createQueryEvent();
+        String queryKanban = createQueryKanban();
+        db.execSQL(queryEvent);
+        db.execSQL(queryKanban);
     }
+
+    @NonNull
+    private String createQueryEvent() {
+        String query = "CREATE TABLE " + TABLE_NAME_EVENT +
+                " (" + EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_DAY_EVENT + " INTEGER, " +
+                COLUMN_YEAR_EVENT + " INTEGER," +
+                COLUMN_MONTH_EVENT + " INTEGER," +
+                COLUMN_NAME_EVENT + " TEXT);";
+        return query;
+    }
+
+    private String createQueryKanban() {
+        String query = "CREATE TABLE " + TABLE_NAME_KANBAN +
+                " (" + KANBAN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_KANBAN_CREATION + " TEXT, " +
+                COLUMN_KANBAN_DEADLINE + " TEXT," +
+                COLUMN_KANBAN_STATE + " INTEGER," +
+                COLUMN_KANBAN_NAME + " TEXT);";
+        return query;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_EVENT);
         onCreate(db);
     }
 
@@ -49,11 +78,27 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(COLUMN_DAY, day);
-        cv.put(COLUMN_MONTH, month);
-        cv.put(COLUMN_YEAR, year);
-        cv.put(COLUMN_NAME, name);
-        long result = db.insert(TABLE_NAME,null, cv);
+        cv.put(COLUMN_DAY_EVENT, day);
+        cv.put(COLUMN_MONTH_EVENT, month);
+        cv.put(COLUMN_YEAR_EVENT, year);
+        cv.put(COLUMN_NAME_EVENT, name);
+        long result = db.insert(TABLE_NAME_EVENT,null, cv);
+        if(result == -1){
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(context, "Added Successfully!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    void addTaskKanban(String creationDate, String  deadLine, int state, String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_KANBAN_CREATION, creationDate);
+        cv.put(COLUMN_KANBAN_DEADLINE, deadLine);
+        cv.put(COLUMN_KANBAN_STATE, state);
+        cv.put(COLUMN_KANBAN_NAME, name);
+        long result = db.insert(TABLE_NAME_KANBAN,null, cv);
         if(result == -1){
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
         }else {
@@ -62,7 +107,7 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     Cursor readAllData(){
-        String query = "SELECT * FROM " + TABLE_NAME;
+        String query = "SELECT * FROM " + TABLE_NAME_EVENT;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
@@ -75,11 +120,11 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
     void updateData(String row_id, int day, int year, int name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_DAY, day);
-        cv.put(COLUMN_YEAR, year);
-        cv.put(COLUMN_NAME, name);
+        cv.put(COLUMN_DAY_EVENT, day);
+        cv.put(COLUMN_YEAR_EVENT, year);
+        cv.put(COLUMN_NAME_EVENT, name);
 
-        long result = db.update(TABLE_NAME, cv, "_id=?", new String[]{row_id});
+        long result = db.update(TABLE_NAME_EVENT, cv, "_id=?", new String[]{row_id});
         if(result == -1){
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
         }else {
@@ -90,7 +135,7 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
 
     void deleteOneRow(String row_id){
         SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete(TABLE_NAME, "_id=?", new String[]{row_id});
+        long result = db.delete(TABLE_NAME_EVENT, "_id=?", new String[]{row_id});
         if(result == -1){
             Toast.makeText(context, "Failed to Delete.", Toast.LENGTH_SHORT).show();
         }else{
@@ -100,7 +145,7 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
 
     void deleteAllData(){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_NAME);
+        db.execSQL("DELETE FROM " + TABLE_NAME_EVENT);
     }
 
 }
