@@ -234,9 +234,15 @@ MyDatabaseHelper extends SQLiteOpenHelper {
     void deleteAllData(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME_EVENT);
-        db.execSQL("DELETE FROM " + TABLE_NAME_KANBAN);
-        db.execSQL("DELETE FROM " + TABLE_NAME_SETTING);
     }
 
+    void deleteAllDataKanban(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(" DELETE FROM " + TABLE_NAME_KANBAN);
+    }
+    void deleteAllDataSetting(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(" DELETE FROM " + TABLE_NAME_SETTING);
+    }
 
 }
