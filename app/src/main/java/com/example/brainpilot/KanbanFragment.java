@@ -66,7 +66,7 @@ public class KanbanFragment extends Fragment {
             from.removeView(card);
             to.addView(card);
         } else {
-            Toast.makeText(getActivity(), "La carte n'existe pas dans la colonne d'origine.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "The card does not exist anymore in the source column.", Toast.LENGTH_SHORT).show();
         }
     }
 }
