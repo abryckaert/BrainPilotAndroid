@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+
 import java.util.ArrayList;
 
 class MyDatabaseHelper extends SQLiteOpenHelper {
@@ -38,7 +39,12 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_KANBAN_CREATION = "creationDate";
     private static final String COLUMN_KANBAN_DEADLINE = "deadLine";
 
-
+    // Settings database
+    private static final String TABLE_NAME_SETTING = "setting";
+    private static final String SETTING_ID = "id";
+    private static final String COLUMN_SETTING_FIRSTNAME ="firstName";
+    private static final String COLUMN_SETTING_LASTNAME ="lastName";
+    private static final String COLUMN_SETTING_LEARNINGMETHOD = "learningMethod";
     MyDatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -48,8 +54,10 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String queryEvent = createQueryEvent();
         String queryKanban = createQueryKanban();
+        String querySetting = createQuerySetting();
         db.execSQL(queryEvent);
         db.execSQL(queryKanban);
+        db.execSQL(querySetting);
     }
 
     @NonNull
@@ -72,6 +80,15 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_KANBAN_DEADLINE + " TEXT," +
                 COLUMN_KANBAN_STATE + " INTEGER," +
                 COLUMN_KANBAN_NAME + " TEXT);";
+        return query;
+    }
+
+    private String createQuerySetting(){
+        String query = " CREATE TABLE " + TABLE_NAME_SETTING +
+                "(" +SETTING_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                COLUMN_SETTING_FIRSTNAME + " TEXT, " +
+                COLUMN_SETTING_LASTNAME + " TEXT , " +
+                COLUMN_SETTING_LEARNINGMETHOD + " TEXT, ";
         return query;
     }
 
@@ -111,6 +128,22 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
         if(result == -1){
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
         }else {
+            Toast.makeText(context, "Added Successfully!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    void addDataSetting (String firstName, String lastName, String learningMethod){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_SETTING_FIRSTNAME, firstName);
+        cv.put(COLUMN_SETTING_LASTNAME, lastName);
+        cv.put(COLUMN_SETTING_LEARNINGMETHOD, learningMethod);
+        long result = db.insert(TABLE_NAME_SETTING, null, cv);
+        if(result == -1){
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        }
+        else {
             Toast.makeText(context, "Added Successfully!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -173,12 +206,67 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+
+    void updateData( String row_id, String name, String state, String creationDate, String deadline){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_KANBAN_NAME, name);
+        cv.put(COLUMN_KANBAN_STATE, state);
+        cv.put(COLUMN_KANBAN_CREATION, creationDate);
+        cv.put(COLUMN_KANBAN_DEADLINE, deadline);
+
+        long result = db.update(TABLE_NAME_KANBAN, cv, "_id=?", new String[]{row_id});
+        if(result == -1){
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(context, "Updated Successfully!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    void updateData( String row_id, String firstName, String lastName, String learningMethod){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_KANBAN_NAME, firstName);
+        cv.put(COLUMN_KANBAN_STATE, lastName);
+        cv.put(COLUMN_KANBAN_CREATION, learningMethod);
+
+
+        long result = db.update(TABLE_NAME_SETTING, cv, "_id=?", new String[]{row_id});
+        if(result == -1){
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(context, "Updated Successfully!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     void deleteOneRow(String row_id){
         SQLiteDatabase db = this.getWritableDatabase();
         long result = db.delete(TABLE_NAME_EVENT, "_id=?", new String[]{row_id});
         if(result == -1){
             Toast.makeText(context, "Failed to Delete.", Toast.LENGTH_SHORT).show();
-        }else{
+        }
+        else{
+            Toast.makeText(context, "Successfully Deleted.",Toast.LENGTH_SHORT).show();
+        }
+    }
+    void deleteOneRowKanban(String row_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete(TABLE_NAME_KANBAN, "_id=?", new String[]{row_id});
+        if(result == -1){
+            Toast.makeText(context, "Failed to Delete.", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(context, "Successfully Deleted.",Toast.LENGTH_SHORT).show();
+        }
+    }
+    void deleteOneRowSetting(String row_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete(TABLE_NAME_SETTING, "_id=?", new String[]{row_id});
+        if(result == -1){
+            Toast.makeText(context, "Failed to Delete.", Toast.LENGTH_SHORT).show();
+        }
+        else{
             Toast.makeText(context, "Successfully Deleted.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -186,6 +274,15 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
     void deleteAllData(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME_EVENT);
+    }
+
+    void deleteAllDataKanban(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(" DELETE FROM " + TABLE_NAME_KANBAN);
+    }
+    void deleteAllDataSetting(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(" DELETE FROM " + TABLE_NAME_SETTING);
     }
 
 }
