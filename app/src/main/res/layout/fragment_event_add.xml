@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,6 +27,29 @@
         android:ems="10"
         android:inputType="text"/>
 
+    <Button
+        android:id="@+id/selectTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="#F44336"
+        android:text="Select hour"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/eventTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text=""
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textColor="@color/black"/>
+
     <TextView
         android:id="@+id/eventDate"
         android:layout_width="wrap_content"
@@ -33,26 +57,14 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:text="Date"
-        android:textSize="20sp"
         android:textAlignment="center"
-        android:textColor="@color/black"/>
-
-    <TextView
-        android:id="@+id/eventTimeTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:text="Time"
-        android:textSize="20sp"
-        android:textAlignment="center"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:background="#F44336"
         android:text="Save"
@@ -68,7 +80,7 @@
         android:layout_marginTop="20dp"
         android:background="#00BCFF05"
         android:text="Back"
-        android:textColor="@color/blue"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
 

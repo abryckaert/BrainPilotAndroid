@@ -11,8 +11,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-class
-MyDatabaseHelper extends SQLiteOpenHelper {
+
+import java.util.ArrayList;
+
+class MyDatabaseHelper extends SQLiteOpenHelper {
 
     private Context context;
     private static final String DATABASE_NAME = "brainpilot.db";
@@ -21,6 +23,9 @@ MyDatabaseHelper extends SQLiteOpenHelper {
     //Event database
     private static final String TABLE_NAME_EVENT = "event";
     private static final String EVENT_ID = "id";
+    private static final String COLUMN_MIN_EVENT = "min";
+    private static final String COLUMN_HOUR_EVENT = "hour";
+
     private static final String COLUMN_DAY_EVENT = "day";
     private static final String COLUMN_MONTH_EVENT = "month";
     private static final String COLUMN_YEAR_EVENT = "year";
@@ -59,6 +64,8 @@ MyDatabaseHelper extends SQLiteOpenHelper {
     private String createQueryEvent() {
         String query = "CREATE TABLE " + TABLE_NAME_EVENT +
                 " (" + EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_MIN_EVENT + " TEXT, " +
+                COLUMN_HOUR_EVENT + " TEXT, " +
                 COLUMN_DAY_EVENT + " INTEGER, " +
                 COLUMN_YEAR_EVENT + " INTEGER," +
                 COLUMN_MONTH_EVENT + " INTEGER," +
@@ -91,10 +98,12 @@ MyDatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addEvent(int day, int month, int year, String name){
+    void addEvent(int day, int month, int year,String hour, String min, String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
+        cv.put(COLUMN_MIN_EVENT, min);
+        cv.put(COLUMN_HOUR_EVENT, hour);
         cv.put(COLUMN_DAY_EVENT, day);
         cv.put(COLUMN_MONTH_EVENT, month);
         cv.put(COLUMN_YEAR_EVENT, year);
@@ -106,7 +115,7 @@ MyDatabaseHelper extends SQLiteOpenHelper {
             Toast.makeText(context, "Added Successfully!", Toast.LENGTH_SHORT).show();
         }
     }
-    
+
     void addTaskKanban(String creationDate, String  deadLine, int state, String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -148,6 +157,37 @@ MyDatabaseHelper extends SQLiteOpenHelper {
             cursor = db.rawQuery(query, null);
         }
         return cursor;
+    }
+
+    ArrayList<String> executeQuery(String query){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<String> queryResult = new ArrayList<String>();
+        Cursor cursor = db.rawQuery(query,null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    queryResult.add(cursor.getString(0));
+                } while (cursor.moveToNext());
+            }
+
+        /*
+        if(cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount() -1; i++){
+               queryResult.set(i, cursor.toString());
+               cursor.moveToNext();
+            }
+        }
+         */
+        return (queryResult);
+    }
+
+    int countResult(String query){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
     void updateData(String row_id, int day, int year, int name){
